@@ -1,15 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <SFML/Graphics/Image.hpp>
 
-/*void isPlaneClicked(sf::Sprite sprite , sf::RenderWindow window , sf::Vector2i mouse_pos)
-{
-    sf::Vector2f sprite_pos;
-    sprite_pos=sprite.getPosition();
-    if(mouse_pos.x >= sprite_pos.x && mouse_pos.x <= sprite_pos.x+48 &&  mouse_pos.y >= sprite_pos.y && mouse_pos.y <= sprite_pos.y+48)
-        std::cout<<"click";
-    else
-        std::cout<<"NO";
-}*/
 
 void isPlaneClicked ( sf::Sprite *spr, sf::RenderWindow *render , sf::Vector2i mouse_pos )
 {
@@ -32,6 +24,9 @@ int main()
     window.create(sf::VideoMode (800,800), "Hello");
     window.setPosition(sf::Vector2i(100,100));
     window.setTitle("Changed Title");
+    sf::Image background;
+	if (!background.loadFromFile("airport.png"))
+    std::cout<<1;
 
     sf::Vector2i mouse_pos;
 

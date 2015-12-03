@@ -1,4 +1,8 @@
-// MERGE TEST
+/* MERGE TEST
+dvad
+v
+aca
+*/
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -26,10 +30,4 @@ int main()
     return 0;
 }
 
-/*
-la
-la
-la
-la
-lalala ohhh
-*/
+

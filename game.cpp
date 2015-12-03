@@ -1,3 +1,5 @@
+// MERGE TEST
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 

@@ -1,7 +1,6 @@
 /* MERGE TEST
 dvad
 v
-aca
 */
 
 #include <SFML/Graphics.hpp>

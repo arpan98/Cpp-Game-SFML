@@ -5,7 +5,8 @@ int main()
 {
     sf::RenderWindow window;
     window.create(sf::VideoMode (800,600), "Hello");
-   
+    window.setPosition(sf::Vector2i(100,100));
+    window.setTitle("Changed Title");
 
     while (window.isOpen())
     {
@@ -25,5 +26,4 @@ int main()
 
 }
 
-}
-
+	

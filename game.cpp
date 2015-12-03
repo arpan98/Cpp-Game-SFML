@@ -2,15 +2,25 @@
 #include <iostream>
 #include <SFML/Graphics/Image.hpp>
 
+
+
+
 int main()
 {
     sf::RenderWindow window;
-    window.create(sf::VideoMode (800,600), "Hello");
+    window.create(sf::VideoMode (774,359), "Hello");
     window.setPosition(sf::Vector2i(100,100));
     window.setTitle("Changed Title");
-    sf::Image background;
-	if (!background.loadFromFile("airport.png"))
-    std::cout<<1;
+    
+   	sf::Texture texture;
+	if (!texture.loadFromFile("airport.png"))
+		{
+    	std::cout<<"Texture not found";
+    	}
+	
+	sf::Sprite bg;
+	bg.setTexture(texture);
+
 
     while (window.isOpen())
     {
@@ -22,7 +32,7 @@ int main()
         }
 
         window.clear();
-        
+        window.draw(bg);
         window.display();
     }
 

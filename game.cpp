@@ -149,6 +149,7 @@ int main()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
         {
 
+            mouse_pos=sf::Mouse::getPosition(window);
             if(click_start==false && planeClicked==false)
                 planeClicked=isPlaneClicked(&planeSprite,&window,mouse_pos);
 
@@ -175,8 +176,7 @@ int main()
                 }
             }
 
-             mouse_pos=sf::Mouse::getPosition(window);
-            isPlaneClicked(&planeSprite,&window,mouse_pos);
+            
 
         }
 

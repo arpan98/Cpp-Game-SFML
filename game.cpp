@@ -25,13 +25,13 @@ void rotate (sf::Sprite *planeSprite, sf::Vertex vertex)
 {	sf::Vector2f point = vertex.position;
     sf::Vector2f plane_pos;
     double rise, run, angle;
-	planeSprite->setOrigin(24,24);
+	
 	plane_pos=planeSprite->getPosition();
 
     //std::cout<<"Mouse: "<<mouse_pos.x<<" "<<mouse_pos.y<<std::endl;
     //std::cout<<"Plane: "<<plane_pos.x<<" "<<plane_pos.y<<std::endl;
-    rise= point.y - (plane_pos.y+24);
-    run = point.x - (plane_pos.x+24);
+    rise= point.y - (plane_pos.y);
+    run = point.x - (plane_pos.x);
     angle = 57.296*atan(double(rise/run));
     std::cout<<"Rise: "<<rise<<"Run: "<<run<<"Angle: "<<angle<<std::endl;
     if (run<0)
@@ -72,15 +72,14 @@ int main()
         std::cout<<"Error opening plane icon\n";
     }
     planeSprite.setTexture(planeTexture);
-    
+    planeSprite.setOrigin(24,24);
     planeSprite.setPosition(100,100);
 
  
-
     while (window.isOpen())
     {	mouse_pos=sf::Mouse::getPosition(window);
     	
-    	//rotate(&planeSprite);
+    	rotate(&planeSprite , sf::Vertex(sf::Vector2f(100,0)));
 
         sf::Event event;
         while (window.pollEvent(event))

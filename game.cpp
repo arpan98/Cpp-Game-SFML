@@ -30,7 +30,7 @@ class Plane
 
     		}
 
-    	/*void Plane (std::String filename) 
+    	Plane (char* filename) 
     		{
     		    if(!planeTexture.loadFromFile(filename))
     				{
@@ -41,7 +41,7 @@ class Plane
     		    planeSprite.setPosition(100,100);
 
     		}
-		*/
+		
     	sf::Vector2f getPosition()
     		{
     			return planeSprite.getPosition();
@@ -70,7 +70,7 @@ class Plane
 
 	};
 
-Plane p;
+Plane p("airplane.png");
 
 
 
@@ -135,12 +135,10 @@ int main()
 
         }
 
-    
+        sf::Vector2f point = p.getPosition();
+ 		std::cout<<point.x<<" "<<point.y<<std::endl;    	    
         window.draw(bg);
-
-     
         window.draw(p.planeSprite);
-        
         window.display();
     }
 

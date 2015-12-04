@@ -5,10 +5,10 @@
 #include <math.h>
 #include <SFML/Graphics/Image.hpp>
 
-#define SPEED 0.05
+#define SPEED 1
 
 sf::Vector2i mouse_pos;
-sf::Clock clk;
+
 std::vector<sf::Vector2i> mouse_coords(500);
 
 int no_of_planes=0;
@@ -99,11 +99,11 @@ class Plane
                 float sine = (direction.y)/hyp;
                 float cosine = (direction.x)/hyp;
 
-                sf::Time tmr = clk.getElapsedTime();
-                float timer = tmr.asMilliseconds();
+
                 std::cout<<dist_travelled<<"\n";
-                planeSprite.setPosition(initial_point.x + SPEED*timer*cosine , initial_point.y + SPEED*timer*sine);
-                dist_travelled=SPEED*timer;        
+                //planeSprite.setPosition(initial_point.x + SPEED*timer*cosine , initial_point.y + SPEED*timer*sine);
+                planeSprite.move(SPEED*cosine , SPEED*sine);
+                dist_travelled+=SPEED;        
             }
         }
 
@@ -135,7 +135,7 @@ int whichPlaneClicked(sf::Vector2i mouse_pos)
 {
     for(int i=0 ; i<= no_of_planes ; i++)
     {
-        if(planes[i].isPlaneClicked(mouse_pos))                               //TODO : plane[i]
+        if(planes[i].isPlaneClicked(mouse_pos))                          
             return i;
     }
     return -1;
@@ -237,7 +237,7 @@ int main()
 
         window.draw(bg);
 
-        planes[0].moveInDirection(sf::Vector2f(100,100) , sf::Vector2f(100,0));
+        planes[0].moveInDirection(sf::Vector2f(100,100) , sf::Vector2f(1,0) , 100);
         window.draw(planes[0].planeSprite);
         
         window.display();

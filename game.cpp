@@ -12,6 +12,8 @@ std::vector<sf::Vector2i> mouse_coords(500);
 sf::Vertex line_points[10000];
 sf::Vertex line_vertices[2];
 
+long planeIndex=0;
+
 
 bool isPlaneClicked ( sf::Sprite *spr, sf::RenderWindow *render , sf::Vector2i mouse_pos )
 {
@@ -58,7 +60,7 @@ void rotate (sf::Sprite *planeSprite, sf::Vertex vertex)
     rise= point.y - (plane_pos.y);
     run = point.x - (plane_pos.x);
     angle = 57.296*atan(double(rise/run));
-    std::cout<<"Rise: "<<rise<<"Run: "<<run<<"Angle: "<<angle<<std::endl;
+    //std::cout<<"Rise: "<<rise<<"Run: "<<run<<"Angle: "<<angle<<std::endl;
     if (run<0)
       	planeSprite->setRotation(135+angle+180);
     else
@@ -66,9 +68,14 @@ void rotate (sf::Sprite *planeSprite, sf::Vertex vertex)
 
 }
 
-void movePlane()
+void movePlane(sf::Sprite *planeSprite , sf::RenderWindow *window , long ctr)
 {
-    
+    if(planeIndex<=ctr && ctr>=1)
+    {
+        sf::Vector2f point = line_points[planeIndex].position;
+        planeSprite->setPosition(point);
+        planeIndex++;
+    }
 }
 
 
@@ -110,6 +117,7 @@ int main()
     planeSprite.setTexture(planeTexture);
     planeSprite.setOrigin(24,24);
     planeSprite.setPosition(100,100);
+
 
  
     while (window.isOpen())
@@ -175,7 +183,8 @@ int main()
 
         window.draw(bg);
 
-        movePlane();
+        movePlane(&planeSprite , &window , ctr-1);
+        window.draw(planeSprite);
         drawLine(ctr-1 , &window);
         window.display();
     }

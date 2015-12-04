@@ -4,15 +4,12 @@
 #include <utility>
 #include <math.h>
 #include <SFML/Graphics/Image.hpp>
-#include <math.h>
 
 sf::Vector2i mouse_pos;
 
-#define coords std::pair<int,int>
-
 std::vector<sf::Vector2i> mouse_coords(500);
 
-sf::Vertex line_points[500];
+sf::Vertex line_points[10000];
 sf::Vertex line_vertices[2];
 
 
@@ -67,14 +64,17 @@ void rotate (sf::Sprite *planeSprite, sf::Vertex vertex)
     else
     	planeSprite->setRotation(135+angle);
 
+}
 
+void movePlane()
+{
+    
 }
 
 
 int main()
 {
     sf::RenderWindow window;
-    sf::VertexArray lines(sf::LinesStrip, 500);
     sf::Vector2i initial_point;
 
     long ctr=0;
@@ -157,13 +157,10 @@ int main()
             {
                 //std::cout<<mouse_pos.x<<" "<<mouse_pos.y<<'\n';
                 dist = distance(ctr-1,mouse_pos);
-                if(dist>50) {
+                if(dist>20) {
                     //mouse_coords.push_back(std::make_pair(mouse_pos.x , mouse_pos.y));
                     mouse_coords[ctr].x=mouse_pos.x;
                     mouse_coords[ctr].y=mouse_pos.y;
-
-                    lines[ctr-1].position = sf::Vector2f(mouse_pos.x , mouse_pos.y);
-                    lines[ctr-1].color = sf::Color::Black;
 
                     line_points[ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
                     
@@ -179,7 +176,7 @@ int main()
 
         window.draw(bg);
 
-        window.draw(planeSprite);
+        movePlane();
         drawLine(ctr-1 , &window);
         window.display();
     }

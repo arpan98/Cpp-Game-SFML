@@ -30,6 +30,7 @@ class Plane
         long ctr;
         int dist_travelled;
 
+
     	Plane () 
     		{
     		    if(!planeTexture.loadFromFile("airplane.png"))
@@ -42,6 +43,8 @@ class Plane
                 no_of_planes++;
                 planeReached=line_drawn=false;
                 ctr=line_ctr=dist_travelled=0;
+                last_direction.x=1;
+                last_direction.y=0;
             }
 
 
@@ -130,7 +133,7 @@ class Plane
 	        }
 
 	    void moveInLine()
-	    	{	if (line_drawn && ctr<line_ctr-1)
+	    	{	if (line_drawn && ctr<line_ctr-2)
 	    			{	
 	    				sf::Vector2f direction;
 	    				direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
@@ -141,26 +144,27 @@ class Plane
 	    					ctr++;
 
 	    			}
-                else if (line_drawn && ctr==line_ctr-1)    
+                else if (line_drawn && ctr==line_ctr-2)    
                     {   
                         
                         last_direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
                         last_direction.x = line_points[ctr+1].position.x- line_points[ctr].position.x;
                         float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
-                        moveInDirection ( line_points[ctr].position , last_direction , 20000);
-                        std::cout<<last_direction.x<<" "<<last_direction.y<<"\n";
-                        dist_travelled=0;
+                        moveInDirection ( line_points[ctr].position , last_direction , int (distance));
+                        std::cout<<last_direction.x<<" "<<last_direction.y<<" "<<line_ctr-2<<"\n";
+                        
                         ctr++;
                     }
-                else if(line_drawn && ctr==line_ctr)
+                else if(line_drawn && ctr==line_ctr-1)
                     {
                         refreshPointsList();
+                        ctr++;
                         
                     }
 	    	    else
 	    	    	{
                         ctr=0;
-                        //moveInDirection ( line_points[ctr].position , last_direction , 20000);
+                        moveInDirection ( getPosition() , last_direction , 20000);
                     }
 	    	}
 
@@ -282,6 +286,7 @@ int main()
                 dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
                 if(dist>20) {
                     planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
+                    std::cout<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr].position.y<<std::endl;
                     planes[clickedPlaneIndex].line_ctr++;
                 }
             }

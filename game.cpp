@@ -109,7 +109,9 @@ class Plane
 
 	};
 
+
 Plane planes[5];
+
 
 
 
@@ -192,6 +194,7 @@ int main()
             }
 
         }
+
 
 
         /*if(sf::Mouse::isButtonPressed(sf::Mouse::Left))

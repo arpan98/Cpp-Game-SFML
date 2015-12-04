@@ -12,7 +12,7 @@ sf::Vector2i mouse_pos;
 std::vector<sf::Vector2i> mouse_coords(500);
 
 int no_of_planes=0;
-    int dist_travelled=0;
+
 
 
 
@@ -25,6 +25,10 @@ class Plane
         sf::Sprite planeSprite;
         sf::Vertex line_points[10000];
         sf::Vertex line_vertices[2];
+        bool line_drawn;
+        long ctr=0;
+        long line_ctr=0;
+        int dist_travelled=0;
 
     	Plane () 
     		{
@@ -92,27 +96,45 @@ class Plane
             }
 
         void moveInDirection(sf::Vector2f initial_point , sf::Vector2f direction , int distance = 20000)
-        {
-            if(dist_travelled < distance) {
-                //std::cout<<position.x<<" "<<position.y<<"\n";
-                float hyp = sqrt(direction.x*direction.x + direction.y*direction.y);
-                float sine = (direction.y)/hyp;
-                float cosine = (direction.x)/hyp;
+	        {
+	            if(dist_travelled < distance) {
+	                //std::cout<<position.x<<" "<<position.y<<"\n";
+	                float hyp = sqrt(direction.x*direction.x + direction.y*direction.y);
+	                float sine = (direction.y)/hyp;
+	                float cosine = (direction.x)/hyp;
 
 
-                std::cout<<dist_travelled<<"\n";
-                //planeSprite.setPosition(initial_point.x + SPEED*timer*cosine , initial_point.y + SPEED*timer*sine);
-                planeSprite.move(SPEED*cosine , SPEED*sine);
-                dist_travelled+=SPEED;        
-            }
-        }
+	                std::cout<<dist_travelled<<"\n";
+	                //planeSprite.setPosition(initial_point.x + SPEED*timer*cosine , initial_point.y + SPEED*timer*sine);
+	                planeSprite.move(SPEED*cosine , SPEED*sine);
+	                if (distance!=20000)
+	                dist_travelled+=SPEED;
+	                if (dist_travelled>distance)
+	                dist_travelled=0;
+	            }
+	        }
+
+	    void moveInLine()
+	    	{	if (line_drawn && ctr<line_ctr)
+	    			{	
+	    				sf::Vector2f direction;
+	    				direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
+	    				direction.x = line_points[ctr+1].position.x- line_points[ctr].position.x;
+	    				float distance sqrt(direction.x*direction.x + direction.y*direction.y);
+	    				moveInDirection ( line_points[ctr] , direction , int (distance));
+	    				if (dist_travelled==0)
+	    					ctr++;
+
+	    			}
+	    	    else
+	    	    	ctr=0;
+	    	}
+
 
 	};
 
 
 Plane planes[5];
-
-
 
 
 int distance (long index , sf::Vector2i mouse_pos)

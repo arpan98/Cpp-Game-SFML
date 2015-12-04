@@ -13,6 +13,31 @@ sf::Vertex line_points[10000];
 sf::Vertex line_vertices[2];
 
 long planeIndex=0;
+class Plane
+	{	public:
+		sf::Texture planeTexture;
+    	sf::Sprite planeSprite;
+    	void setImage (std::String filename) 
+    		{
+    		    if(!planeTexture.loadFromFile(filename))
+    				{
+        				std::cout<<"Error opening plane icon\n";
+    				}
+    			planeSprite.setTexture(planeTexture);
+    		    planeSprite.setOrigin(24,24);
+
+    		}
+
+    	sf::Vector2f getPosition()
+    		{
+    			return planeSprite.getPosition();
+    		} 
+
+
+
+	};
+
+
 
 
 bool isPlaneClicked ( sf::Sprite *spr, sf::RenderWindow *render , sf::Vector2i mouse_pos )

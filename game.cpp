@@ -42,10 +42,10 @@ class Plane
 
 bool isPlaneClicked ( sf::Sprite *spr, sf::RenderWindow *render , sf::Vector2i mouse_pos )
 {
-    if   ( mouse_pos.x > spr->getPosition().x
-        && mouse_pos.x < spr->getPosition().x + 48
-        && mouse_pos.y > spr->getPosition().y
-        && mouse_pos.y < spr->getPosition().y + 48 )
+    if   ( mouse_pos.x > spr->getPosition().x - 24
+        && mouse_pos.x < spr->getPosition().x + 24
+        && mouse_pos.y > spr->getPosition().y - 24
+        && mouse_pos.y < spr->getPosition().y + 24 )
     {
         return true;
     }
@@ -64,7 +64,7 @@ void drawLine(long ctr , sf::RenderWindow *window)
 {
     if(ctr>=1)
     {
-        for(long i=0 ; i<ctr ; i++)
+        for(long i=1 ; i<ctr ; i++)
         {
             line_vertices[0]=line_points[i-1];
             line_vertices[1]=line_points[i];

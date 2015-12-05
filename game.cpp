@@ -302,7 +302,8 @@ int main()
             else if(clickedPlaneIndex>=0)
             {
                 dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
-                if(dist>50) {
+                if(dist>10) {
+                	planes[clickedPlaneIndex].line_drawn=true;
                     planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
                     
                     planes[clickedPlaneIndex].line_ctr++;
@@ -312,10 +313,11 @@ int main()
         }
         else
         {
-            if (click_started==true)
+            /*if (click_started==true)
             	if (clickedPlaneIndex>=0 && planes[clickedPlaneIndex].line_ctr>=2)
                 	planes[clickedPlaneIndex].line_drawn=true;
-            click_started=false;
+            */
+               click_started=false;
 
         }
 

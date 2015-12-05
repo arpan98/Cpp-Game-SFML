@@ -45,6 +45,7 @@ class Plane
                 ctr=line_ctr=dist_travelled=0;
                 last_direction.x=1;
                 last_direction.y=0;
+                planeSprite.setRotation(135);
             }
 
 
@@ -137,11 +138,11 @@ class Plane
 	    	{	
 	    		if (line_drawn && ctr==0)
 	    			{	
-	    				sf::Vector2f direction;
-	    				direction.y = line_points[ctr].position.y- getPosition().y;
-	    				direction.x = line_points[ctr].position.x- getPosition().x;
-	    				float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
-	    				moveInDirection (	getPosition() , direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
+	    				
+	    				last_direction.y = line_points[ctr].position.y- getPosition().y;
+	    				last_direction.x = line_points[ctr].position.x- getPosition().x;
+	    				float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
+	    				moveInDirection (	getPosition() , last_direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
 	    				rotate(line_points[ctr]);
 	    				std::cout<<"1\n";
 	    				if (dist_travelled==0)
@@ -150,11 +151,11 @@ class Plane
 	    			}
 	    		else if (line_drawn && ctr<line_ctr-1)
 	    			{	
-	    				sf::Vector2f direction;
-	    				direction.y = line_points[ctr].position.y- line_points[ctr-1].position.y;
-	    				direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
-	    				float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
-	    				moveInDirection ( line_points[ctr].position , direction , int (distance));
+	    				
+	    				last_direction.y = line_points[ctr].position.y- line_points[ctr-1].position.y;
+	    				last_direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
+	    				float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
+	    				moveInDirection ( line_points[ctr].position , last_direction , int (distance));
 	    				rotate(line_points[ctr]);
 	    				std::cout<<"2\n";
 	    				//std::cout<<line_points[ctr].position.x<<" "<<line_points[ctr].position.y<<" "<<line_points[ctr-1].position.x<<" "<<line_points[ctr-1].position.y<<"\n";
@@ -312,7 +313,7 @@ int main()
         }
         else
         {
-            if (click_started==true)
+            if (click_started==true && planes[clickedPlaneIndex].line_ctr>=2)
                 planes[clickedPlaneIndex].line_drawn=true;
             click_started=false;
         }

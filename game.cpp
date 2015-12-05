@@ -275,6 +275,11 @@ int main()
 
             click_started=true;
 
+            if(clickedPlaneIndex>=0)
+            {
+                planes[clickedPlaneIndex].refreshPointsList();
+            }
+
             if(clickedPlaneIndex>=0 && planes[clickedPlaneIndex].line_ctr==0) {
 
                 planes[clickedPlaneIndex].line_points[line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));

@@ -306,17 +306,14 @@ int main()
                     planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
                     
                     planes[clickedPlaneIndex].line_ctr++;
-                }
-
-            }
-
+            	}
             
-
+            }
         }
         else
         {
             if (click_started==true)
-            	if (clickedPlaneIndex>=0)
+            	if (clickedPlaneIndex>=0 && planes[clickedPlaneIndex].line_ctr>=2)
                 	planes[clickedPlaneIndex].line_drawn=true;
             click_started=false;
 

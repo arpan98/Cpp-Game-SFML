@@ -125,6 +125,7 @@ class Plane
 	                //std::cout<<distance<<"\n";
 	                //planeSprite.setPosition(initial_point.x + SPEED*timer*cosine , initial_point.y + SPEED*timer*sine);
 	                planeSprite.move(SPEED*cosine , SPEED*sine);
+	                std::cout<<distance<<" "<<dist_travelled<<"\n";
 	                if (distance!=20000)
 	                dist_travelled+=SPEED;
 	                if (dist_travelled>=distance)
@@ -133,38 +134,49 @@ class Plane
 	        }
 
 	    void moveInLine()
-	    	{	if (line_drawn && ctr<line_ctr-2)
+	    	{	
+	    		if (line_drawn && ctr==0)
 	    			{	
 	    				sf::Vector2f direction;
-	    				direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
-	    				direction.x = line_points[ctr+1].position.x- line_points[ctr].position.x;
+	    				direction.y = line_points[ctr].position.y- getPosition().y;
+	    				direction.x = line_points[ctr].position.x- getPosition().x;
 	    				float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
-	    				moveInDirection ( line_points[ctr].position , direction , int (distance));
+	    				moveInDirection (	getPosition() , direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
+	    				
+	    				std::cout<<"1\n";
 	    				if (dist_travelled==0)
 	    					ctr++;
 
 	    			}
-                else if (line_drawn && ctr==line_ctr-2)    
-                    {   
-                        
-                        last_direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
-                        last_direction.x = line_points[ctr+1].position.x- line_points[ctr].position.x;
-                        float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
-                        moveInDirection ( line_points[ctr].position , last_direction , int (distance));
-                        std::cout<<last_direction.x<<" "<<last_direction.y<<" "<<line_ctr-2<<"\n";
-                        
-                        ctr++;
-                    }
-                else if(line_drawn && ctr==line_ctr-1)
+	    		else if (line_drawn && ctr<line_ctr-1)
+	    			{	
+	    				sf::Vector2f direction;
+	    				direction.y = line_points[ctr].position.y- line_points[ctr-1].position.y;
+	    				direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
+	    				float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
+	    				moveInDirection ( line_points[ctr].position , direction , int (distance));
+	    				std::cout<<"2\n";
+	    				//std::cout<<line_points[ctr].position.x<<" "<<line_points[ctr].position.y<<" "<<line_points[ctr-1].position.x<<" "<<line_points[ctr-1].position.y<<"\n";
+	    				if (dist_travelled==0)
+	    					ctr++;
+
+	    			}
+               
+                else if(line_drawn && ctr==line_ctr-1 && ctr!=0)
                     {
+                        last_direction.y = line_points[ctr].position.y- line_points[ctr-1].position.y;
+                        last_direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
+                        moveInDirection ( line_points[ctr].position , last_direction);
+                        std::cout<<"3\n";
+                        //std::cout<<line_points[ctr].position.x<<" "<<line_points[ctr].position.y<<" "<<line_points[ctr-1].position.x<<" "<<line_points[ctr-1].position.y<<" "<<ctr<<" "<<last_direction.x<<" "<<last_direction.y<<"\n";
                         refreshPointsList();
                         ctr++;
                         
                     }
 	    	    else
-	    	    	{
+	    	    	{	std::cout<<"4";
                         ctr=0;
-                        moveInDirection ( getPosition() , last_direction , 20000);
+                        moveInDirection ( getPosition() , last_direction);
                     }
 	    	}
 
@@ -296,8 +308,9 @@ int main()
         }
         else
         {
+            if (click_started==true)
+            	planes[clickedPlaneIndex].line_drawn=true;
             click_started=false;
-            planes[clickedPlaneIndex].line_drawn=true;
         }
 
 

@@ -140,13 +140,12 @@ class Plane
 	    				direction.x = line_points[ctr+1].position.x- line_points[ctr].position.x;
 	    				float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
 	    				moveInDirection ( line_points[ctr].position , direction , int (distance));
-	    				if (dist_travelled==0)
+	    				if (dist_travelled==0) 
 	    					ctr++;
 
 	    			}
                 else if (line_drawn && ctr==line_ctr-2)    
                     {   
-                        std::cout<<"YOSWEG";
                         last_direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
                         last_direction.x = line_points[ctr+1].position.x- line_points[ctr].position.x;
                         float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
@@ -156,9 +155,9 @@ class Plane
                     }
                 else if(line_drawn && ctr==line_ctr-1)
                     {
-                        moveInDirection(line_points[ctr].position , last_direction , 100);
-                        std::cout<<"YO";
-                        refreshPointsList();
+                        std::cout<<"YO\n";
+                        moveInDirection(line_points[ctr].position , last_direction);
+                        //refreshPointsList();
                         
                     }
 	    	    else

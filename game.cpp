@@ -133,35 +133,35 @@ class Plane
                 }
             }
 
-        void moveInLine()
-            {   
-                if (line_drawn && ctr==0)
-                    {   
-                        sf::Vector2f direction;
-                        direction.y = line_points[ctr].position.y- getPosition().y;
-                        direction.x = line_points[ctr].position.x- getPosition().x;
-                        float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
-                        moveInDirection (   getPosition() , direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
-                        rotate(line_points[ctr]);
-                        std::cout<<"1\n";
-                        if (dist_travelled==0)
-                            ctr++;
+	    void moveInLine()
+	    	{	
+	    		if (line_drawn && ctr==0)
+	    			{	
+	    				sf::Vector2f direction;
+	    				direction.y = line_points[ctr].position.y- getPosition().y;
+	    				direction.x = line_points[ctr].position.x- getPosition().x;
+	    				float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
+	    				moveInDirection (	getPosition() , direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
+	    				rotate(line_points[ctr]);
+	    				std::cout<<"1\n";
+	    				if (dist_travelled==0)
+	    					ctr++;
 
-                    }
-                else if (line_drawn && ctr<line_ctr-1)
-                    {   
-                        sf::Vector2f direction;
-                        direction.y = line_points[ctr].position.y- line_points[ctr-1].position.y;
-                        direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
-                        float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
-                        moveInDirection ( line_points[ctr].position , direction , int (distance));
-                        rotate(line_points[ctr]);
-                        std::cout<<"2\n";
-                        //std::cout<<line_points[ctr].position.x<<" "<<line_points[ctr].position.y<<" "<<line_points[ctr-1].position.x<<" "<<line_points[ctr-1].position.y<<"\n";
-                        if (dist_travelled==0)
-                            ctr++;
+	    			}
+	    		else if (line_drawn && ctr<line_ctr-1)
+	    			{	
+	    				sf::Vector2f direction;
+	    				direction.y = line_points[ctr].position.y- line_points[ctr-1].position.y;
+	    				direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
+	    				float distance =sqrt(direction.x*direction.x + direction.y*direction.y);
+	    				moveInDirection ( line_points[ctr].position , direction , int (distance));
+	    				rotate(line_points[ctr]);
+	    				std::cout<<"2\n";
+	    				//std::cout<<line_points[ctr].position.x<<" "<<line_points[ctr].position.y<<" "<<line_points[ctr-1].position.x<<" "<<line_points[ctr-1].position.y<<"\n";
+	    				if (dist_travelled==0)
+	    					ctr++;
 
-                    }
+	    			}
                
                 else if(line_drawn && ctr==line_ctr-1 && ctr!=0)
                     {
@@ -175,8 +175,9 @@ class Plane
                         ctr++;
                         
                     }
-                else
-                    {   std::cout<<"4";
+
+	    	    else
+	    	    	{	std::cout<<"4";
                         ctr=0;
                         moveInDirection ( getPosition() , last_direction);
                     }

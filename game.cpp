@@ -30,6 +30,7 @@ class Plane
         int dist_travelled;
 
 
+
         Plane () 
             {
                 if(!planeTexture.loadFromFile("airplane.png"))
@@ -97,16 +98,13 @@ class Plane
                     }
             }
 
-        void rotate (sf::Vertex vertex)
-            {   sf::Vector2f point = vertex.position;
-                sf::Vector2f plane_pos;
+        void rotate (sf::Vector2f direction)
+            {  
                 double rise, run, angle;
                 
-                plane_pos=planeSprite.getPosition();
-
-
-                rise= point.y - (plane_pos.y);
-                run = point.x - (plane_pos.x);
+                
+                rise= direction.y;
+                run = direction.x;
                 angle = 57.296*atan(double(rise/run));
                 
                 if (run<0)
@@ -144,7 +142,7 @@ class Plane
 	    				last_direction.x = line_points[ctr].position.x- getPosition().x;
 	    				float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
 	    				moveInDirection (	getPosition() , last_direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
-	    				rotate(line_points[ctr]);
+	    				rotate(last_direction);
 	    			
 	    				if (dist_travelled==0)
 	    					ctr++;
@@ -157,7 +155,7 @@ class Plane
 	    				last_direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
 	    				float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
 	    				moveInDirection ( line_points[ctr].position , last_direction , int (distance));
-	    				rotate(line_points[ctr]);
+	    				rotate(last_direction);
 	    				
 	    				
 	    				if (dist_travelled==0)
@@ -170,7 +168,7 @@ class Plane
                         last_direction.y = line_points[ctr].position.y- line_points[ctr-1].position.y;
                         last_direction.x = line_points[ctr].position.x- line_points[ctr-1].position.x;
                         moveInDirection ( line_points[ctr].position , last_direction);
-                        rotate(line_points[ctr]);
+                        rotate(last_direction);
                         
                         
                         refreshPointsList();
@@ -231,9 +229,6 @@ int whichPlaneClicked(sf::Vector2i mouse_pos)
 
 int main()
 {
-
-
-    long line_ctr=0;
     int dist;
     bool planeClicked = false;
     bool click_started = false;
@@ -295,7 +290,7 @@ int main()
 
             if(clickedPlaneIndex>=0 && planes[clickedPlaneIndex].line_ctr==0) {
 
-                planes[clickedPlaneIndex].line_points[line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
+                planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
                 planes[clickedPlaneIndex].line_ctr++; 
                 std::cout<<"If"<<" "<<planes[clickedPlaneIndex].line_ctr<<"\n";
             }
@@ -313,10 +308,7 @@ int main()
         }
         else
         {
-            /*if (click_started==true)
-            	if (clickedPlaneIndex>=0 && planes[clickedPlaneIndex].line_ctr>=2)
-                	planes[clickedPlaneIndex].line_drawn=true;
-            */
+            
                click_started=false;
 
         }

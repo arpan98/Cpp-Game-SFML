@@ -42,6 +42,7 @@ class Plane
                 no_of_planes++;
                 planeReached=line_drawn=false;
                 ctr=line_ctr=dist_travelled=0;
+                refreshPointsList();
             }
 
 
@@ -57,6 +58,7 @@ class Plane
                 no_of_planes++;
                 planeReached=false;
     		    ctr=line_ctr=dist_travelled=0;
+                refreshPointsList();
             }
 		
     	sf::Vector2f getPosition()
@@ -112,6 +114,7 @@ class Plane
 
         void moveInDirection(sf::Vector2f initial_point , sf::Vector2f direction , int distance = 20000)
 	        {
+                std::cout<<dist_travelled<<" "<<distance<<std::endl;
 	            if(dist_travelled < distance) {
 	                //std::cout<<position.x<<" "<<position.y<<"\n";
 	                float hyp = sqrt(direction.x*direction.x + direction.y*direction.y);
@@ -130,7 +133,7 @@ class Plane
 	        }
 
 	    void moveInLine()
-	    	{	if (line_drawn && ctr<line_ctr-1)
+	    	{	if (line_drawn && ctr<line_ctr-2)
 	    			{	
 	    				sf::Vector2f direction;
 	    				direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
@@ -141,19 +144,20 @@ class Plane
 	    					ctr++;
 
 	    			}
-                else if (line_drawn && ctr==line_ctr-1)    
+                else if (line_drawn && ctr==line_ctr-2)    
                     {   
-                        
+                        std::cout<<"YOSWEG";
                         last_direction.y = line_points[ctr+1].position.y- line_points[ctr].position.y;
                         last_direction.x = line_points[ctr+1].position.x- line_points[ctr].position.x;
                         float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
-                        moveInDirection ( line_points[ctr].position , last_direction , 20000);
-                        std::cout<<last_direction.x<<" "<<last_direction.y<<"\n";
-                        dist_travelled=0;
-                        ctr++;
+                        moveInDirection ( line_points[ctr].position , last_direction, int(distance));
+                        if(dist_travelled==0)
+                            ctr++;
                     }
-                else if(line_drawn && ctr==line_ctr)
+                else if(line_drawn && ctr==line_ctr-1)
                     {
+                        moveInDirection(line_points[ctr].position , last_direction , 100);
+                        std::cout<<"YO";
                         refreshPointsList();
                         
                     }
@@ -219,7 +223,7 @@ int main()
     bool click_started = false;
 
     window.create(sf::VideoMode (774,359), "Game");
-    window.setPosition(sf::Vector2i(100,100));
+    window.setPosition(sf::Vector2i(200,200));
     window.setTitle("Changed Title");
     
     

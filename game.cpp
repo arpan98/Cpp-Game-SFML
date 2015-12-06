@@ -6,7 +6,7 @@
 #include <SFML/Graphics/Image.hpp>
 
 #define SPEED 1
-#define line_resolution 10
+#define line_resolution 1
 
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
@@ -348,7 +348,7 @@ int main()
 	            else if(clickedPlaneIndex>=0)
 	            {
 	                dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
-	                if (sqrt((mouse_pos.x - landingZone1.x)*(mouse_pos.x - landingZone1.x) + (mouse_pos.y - landingZone1.y)*(mouse_pos.y - landingZone1.y))<line_resolution)
+	                if (sqrt((mouse_pos.x - landingZone1.x)*(mouse_pos.x - landingZone1.x) + (mouse_pos.y - landingZone1.y)*(mouse_pos.y - landingZone1.y))<15)
 	                {
 	                	planes[clickedPlaneIndex].line_drawn=true;
 	                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));

@@ -308,9 +308,6 @@ int main()
 
     while (window.isOpen())
     {   
-
-        std::cout<<no_of_planes<<std::endl;
-
         mouse_pos=sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
@@ -351,7 +348,15 @@ int main()
 	            else if(clickedPlaneIndex>=0)
 	            {
 	                dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
-	                if(dist>line_resolution) {
+	                if (sqrt((mouse_pos.x - landingZone1.x)*(mouse_pos.x - landingZone1.x) + (mouse_pos.y - landingZone1.y)*(mouse_pos.y - landingZone1.y))<line_resolution)
+	                {
+	                	planes[clickedPlaneIndex].line_drawn=true;
+	                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
+	                    planes[clickedPlaneIndex].line_ctr++;
+	                    clickedPlaneIndex=-1;
+	            	}
+	                else if(dist>line_resolution) 
+	                {
 	                	planes[clickedPlaneIndex].line_drawn=true;
 	                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
 	                    
@@ -373,7 +378,7 @@ int main()
             window.draw(landingCircle1);
         }
 
-        
+
         for(int i=0; i<no_of_planes;i++)
         	{
         		if (!planes[i].planeLanded)

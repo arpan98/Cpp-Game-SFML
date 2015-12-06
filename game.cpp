@@ -11,7 +11,7 @@
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
 sf::Vector2f landingZone1(249,138);
-
+sf::Vector2f landingZone1Direction(1,0);
 
 int no_of_planes=0;
 int clickedPlaneIndex=-1;
@@ -31,6 +31,7 @@ class Plane
         long line_start;
         bool planeLanded;
         bool line_drawn;
+        bool transition;
         long ctr;
         int dist_travelled;
 
@@ -47,7 +48,7 @@ class Plane
                 planeSprite.setOrigin(24,24);
                 planeSprite.setPosition(100,100);
                 no_of_planes++;
-                planeLanded=line_drawn=false;
+                planeLanded=line_drawn=transition=false;
                 ctr=line_ctr=dist_travelled=line_start=0;
                 last_direction.x=1;
                 last_direction.y=0;
@@ -65,8 +66,8 @@ class Plane
                 planeSprite.setOrigin(24,24);
                 planeSprite.setPosition(100,100);
                	no_of_planes++;
-                planeLanded=line_drawn=line_start=false;
-                ctr=line_ctr=dist_travelled=0;
+                planeLanded=line_drawn=transition=false;
+                ctr=line_ctr=dist_travelled=line_start=0;
                 last_direction.x=1;
                 last_direction.y=0;
                 planeSprite.setRotation(135);
@@ -153,6 +154,21 @@ class Plane
                 }
             }
 
+        void landing (sf::Vector2f landingZoneDirection, sf::Vector2f landingZone)
+        	{	
+
+        		rotate(landingZone1Direction);      		
+        		moveInDirection(landingZone,landingZoneDirection);
+        		sf::Vector2f scale = planeSprite.getScale();
+        		if(scale.x>0.1)
+        			planeSprite.setScale(scale.x - 0.01f,scale.y -0.01f);
+        		else
+        		{	
+        			transition=false;
+        			
+        		}
+        	}
+
 	    void moveInLine()
 	    	{	
 	    		if (line_drawn && ctr==0)
@@ -161,7 +177,7 @@ class Plane
 	    				last_direction.y = line_points[ctr].position.y- getPosition().y;
 	    				last_direction.x = line_points[ctr].position.x- getPosition().x;
 	    				float distance =sqrt(last_direction.x*last_direction.x + last_direction.y*last_direction.y);
-	    				moveInDirection (	getPosition() , last_direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
+	    				moveInDirection (getPosition() , last_direction , int (distance+dist_travelled)); //distance+dist_travelled because every time distance decreases by 1 unit and dist_travelled increases by 1 but sum remains constant (varying getPosition())
 	    				rotate(last_direction);
 	    			
 	    				if (dist_travelled==0)
@@ -234,7 +250,8 @@ void drawLinesForAll()
         		planes[i].drawLine();
         	}
         if (sqrt((planes[i].getPosition().x - landingZone1.x)*(planes[i].getPosition().x - landingZone1.x) + (planes[i].getPosition().y - landingZone1.y)*(planes[i].getPosition().y - landingZone1.y))<15)
-			{
+			{	
+				planes[i].transition=true;
 				planes[i].planeLanded=true;        	
 			}
     }
@@ -336,10 +353,18 @@ int main()
         window.draw(bg);
 
         for(int i=0; i<no_of_planes;i++)
-        	if (!planes[i].planeLanded)
-        		window.draw(planes[i].planeSprite);
+        	{
+        		if (!planes[i].planeLanded)
+        			window.draw(planes[i].planeSprite);
+	        	if (planes[i].transition==true)
+	        	{
+	        		planes[i].landing(landingZone1Direction,landingZone1);
+	        		window.draw(planes[i].planeSprite);
+	        	}
+        	}
 
         drawLinesForAll();
+
         
         window.display();
     }

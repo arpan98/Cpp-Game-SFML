@@ -24,10 +24,12 @@ class Plane
         sf::Vertex line_vertices[2];
         sf::Vector2f last_direction;
         long line_ctr;
+        long line_start;
         bool planeReached;
         bool line_drawn;
         long ctr;
         int dist_travelled;
+
 
 
 
@@ -42,7 +44,7 @@ class Plane
                 planeSprite.setPosition(100,100);
                 no_of_planes++;
                 planeReached=line_drawn=false;
-                ctr=line_ctr=dist_travelled=0;
+                ctr=line_ctr=dist_travelled=line_start=0;
                 last_direction.x=1;
                 last_direction.y=0;
                 planeSprite.setRotation(135);
@@ -58,8 +60,8 @@ class Plane
                 planeSprite.setTexture(planeTexture);
                 planeSprite.setOrigin(24,24);
                 planeSprite.setPosition(100,100);
-                no_of_planes++;
-                planeReached=false;
+               	no_of_planes++;
+                planeReached=line_drawn=line_start=false;
                 ctr=line_ctr=dist_travelled=0;
                 last_direction.x=1;
                 last_direction.y=0;
@@ -81,6 +83,7 @@ class Plane
             line_vertices[1]=sf::Vertex(sf::Vector2f(0,0));
             line_ctr=0;
             line_drawn=false;
+            line_start=0;
         }
 
         bool isPlaneClicked ( sf::Vector2i mouse_pos )
@@ -145,7 +148,10 @@ class Plane
 	    				rotate(last_direction);
 	    			
 	    				if (dist_travelled==0)
-	    					ctr++;
+	    					{
+	    						ctr++;
+	    						line_start++;
+	    					}
 
 	    			}
 	    		else if (line_drawn && ctr<line_ctr-1)
@@ -159,7 +165,11 @@ class Plane
 	    				
 	    				
 	    				if (dist_travelled==0)
-	    					ctr++;
+	    					{
+	    						ctr++;
+	    						line_start++;
+	    						std::cout<<line_start<<std::endl;
+	    					}
 
 	    			}
                
@@ -173,6 +183,7 @@ class Plane
                         
                         refreshPointsList();
                         ctr++;
+                        line_start++;
                         
                     }
 
@@ -199,7 +210,7 @@ void drawLine(long line_ctr , long clickedPlaneIndex)
 {
     if(line_ctr>=1 && clickedPlaneIndex>=0)
     {
-        for(long i=1 ; i<line_ctr ; i++)
+        for(long i=planes[clickedPlaneIndex].line_start+1 ; i<line_ctr ; i++)
         {
             planes[clickedPlaneIndex].line_vertices[0]=planes[clickedPlaneIndex].line_points[i-1];
             planes[clickedPlaneIndex].line_vertices[1]=planes[clickedPlaneIndex].line_points[i];
@@ -255,8 +266,6 @@ int main()
     while (window.isOpen())
     {   
         mouse_pos=sf::Mouse::getPosition(window);
-                
-        
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -277,41 +286,41 @@ int main()
 
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-            mouse_pos=sf::Mouse::getPosition(window);
-            if(!click_started) {
-                clickedPlaneIndex = whichPlaneClicked(mouse_pos);
-                if (clickedPlaneIndex>=0)
-                	planes[clickedPlaneIndex].refreshPointsList();
-                std::cout<<"clicked"<<" "<<clickedPlaneIndex<<"\n";
-            }
+	        {
+	            mouse_pos=sf::Mouse::getPosition(window);
+	            if(!click_started) {
+	                clickedPlaneIndex = whichPlaneClicked(mouse_pos);
+	                if (clickedPlaneIndex>=0)
+	                	planes[clickedPlaneIndex].refreshPointsList();
+	                std::cout<<"clicked"<<" "<<clickedPlaneIndex<<"\n";
+	            }
 
-            click_started=true;
+	            click_started=true;
 
-            if(clickedPlaneIndex>=0 && planes[clickedPlaneIndex].line_ctr==0) {
+	            if(clickedPlaneIndex>=0 && planes[clickedPlaneIndex].line_ctr==0) {
 
-                planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
-                planes[clickedPlaneIndex].line_ctr++; 
-                std::cout<<"If"<<" "<<planes[clickedPlaneIndex].line_ctr<<"\n";
-            }
-            else if(clickedPlaneIndex>=0)
-            {
-                dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
-                if(dist>10) {
-                	planes[clickedPlaneIndex].line_drawn=true;
-                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
-                    
-                    planes[clickedPlaneIndex].line_ctr++;
-            	}
-            
-            }
-        }
+	                planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
+	                planes[clickedPlaneIndex].line_ctr++; 
+	                std::cout<<"If"<<" "<<planes[clickedPlaneIndex].line_ctr<<"\n";
+	            }
+	            else if(clickedPlaneIndex>=0)
+	            {
+	                dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
+	                if(dist>15) {
+	                	planes[clickedPlaneIndex].line_drawn=true;
+	                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
+	                    
+	                    planes[clickedPlaneIndex].line_ctr++;
+	            	}
+	            
+	            }
+	        }
         else
-        {
-            
-               click_started=false;
+	        {
+	            
+	            click_started=false;
 
-        }
+	        }
 
 
         window.draw(bg);

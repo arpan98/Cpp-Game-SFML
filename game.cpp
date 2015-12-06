@@ -216,8 +216,15 @@ class Plane
     };
 
 
-Plane planes[1];
+Plane planes[5];
 
+void shiftOneDown(long index)
+{
+    for(long i=index ; i<no_of_planes-1 ; i++)
+    {
+        planes[i]=planes[i+1];
+    }
+}
 
 int distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
 {
@@ -236,7 +243,9 @@ void drawLinesForAll()
         	}
         if (sqrt((planes[i].getPosition().x - landingZone1.x)*(planes[i].getPosition().x - landingZone1.x) + (planes[i].getPosition().y - landingZone1.y)*(planes[i].getPosition().y - landingZone1.y))<15)
 			{
-				planes[i].planeLanded=true;        	
+				planes[i].planeLanded=true;    
+                shiftOneDown(i);
+                no_of_planes-=1;    	
 			}
     }
 }
@@ -281,6 +290,9 @@ int main()
 
     while (window.isOpen())
     {   
+
+        std::cout<<no_of_planes<<std::endl;
+
         mouse_pos=sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
@@ -301,7 +313,6 @@ int main()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	        {
 	            mouse_pos=sf::Mouse::getPosition(window);
-	            std::cout<<mouse_pos.x<<" "<<mouse_pos.y<<"\n";
 	            if(!click_started) {
 	                clickedPlaneIndex = whichPlaneClicked(mouse_pos);
 	                if (clickedPlaneIndex>=0) {

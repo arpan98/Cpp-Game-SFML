@@ -10,9 +10,13 @@
 
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
+sf::Vector2f landingZone1(249,138);
+
 
 int no_of_planes=0;
 int clickedPlaneIndex=-1;
+
+
 
 
 class Plane
@@ -224,8 +228,15 @@ int distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
 void drawLinesForAll()
 {
     for(int i=0 ; i<no_of_planes ; i++)
-    {   planes[i].moveInLine();
-        planes[i].drawLine();
+    {   if (!planes[i].planeLanded)
+    		{	
+    			planes[i].moveInLine();
+        		planes[i].drawLine();
+        	}
+        if (sqrt((planes[i].getPosition().x - landingZone1.x)*(planes[i].getPosition().x - landingZone1.x) + (planes[i].getPosition().y - landingZone1.y)*(planes[i].getPosition().y - landingZone1.y))<15)
+			{
+				planes[i].planeLanded=true;        	
+			}
     }
 }
 

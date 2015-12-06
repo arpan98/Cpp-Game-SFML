@@ -6,13 +6,13 @@
 #include <SFML/Graphics/Image.hpp>
 
 #define SPEED 1
+#define line_resolution 10
 
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
 
 int no_of_planes=0;
-
-
+int clickedPlaneIndex=-1;
 
 
 class Plane
@@ -25,7 +25,7 @@ class Plane
         sf::Vector2f last_direction;
         long line_ctr;
         long line_start;
-        bool planeReached;
+        bool planeLanded;
         bool line_drawn;
         long ctr;
         int dist_travelled;
@@ -43,7 +43,7 @@ class Plane
                 planeSprite.setOrigin(24,24);
                 planeSprite.setPosition(100,100);
                 no_of_planes++;
-                planeReached=line_drawn=false;
+                planeLanded=line_drawn=false;
                 ctr=line_ctr=dist_travelled=line_start=0;
                 last_direction.x=1;
                 last_direction.y=0;
@@ -61,7 +61,7 @@ class Plane
                 planeSprite.setOrigin(24,24);
                 planeSprite.setPosition(100,100);
                	no_of_planes++;
-                planeReached=line_drawn=line_start=false;
+                planeLanded=line_drawn=line_start=false;
                 ctr=line_ctr=dist_travelled=0;
                 last_direction.x=1;
                 last_direction.y=0;
@@ -116,6 +116,19 @@ class Plane
                     planeSprite.setRotation(135+angle);
             }
 
+           void drawLine()
+				{
+				    if(line_ctr>=1)
+				    {
+				        for(long i=line_start+1 ; i<line_ctr ; i++)
+				        {
+				            line_vertices[0]=line_points[i-1];
+				            line_vertices[1]=line_points[i];
+				            window.draw(line_vertices , 2 , sf::Lines);
+				        }
+				    }
+				}
+
         void moveInDirection(sf::Vector2f initial_point , sf::Vector2f direction , int distance = 20000)
             {
                 if(dist_travelled < distance) {
@@ -168,7 +181,7 @@ class Plane
 	    					{
 	    						ctr++;
 	    						line_start++;
-	    						std::cout<<line_start<<std::endl;
+	    						
 	    					}
 
 	    			}
@@ -206,25 +219,13 @@ int distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
     return fabs(mouse_pos.y - planes[clickedPlaneIndex].line_points[index].position.y) + fabs(mouse_pos.x - planes[clickedPlaneIndex].line_points[index].position.x);
 }
 
-void drawLine(long line_ctr , long clickedPlaneIndex)
-{
-    if(line_ctr>=1 && clickedPlaneIndex>=0)
-    {
-        for(long i=planes[clickedPlaneIndex].line_start+1 ; i<line_ctr ; i++)
-        {
-            planes[clickedPlaneIndex].line_vertices[0]=planes[clickedPlaneIndex].line_points[i-1];
-            planes[clickedPlaneIndex].line_vertices[1]=planes[clickedPlaneIndex].line_points[i];
-            window.draw(planes[clickedPlaneIndex].line_vertices , 2 , sf::Lines);
-        }
-    }
-}
+
 
 void drawLinesForAll()
 {
     for(int i=0 ; i<no_of_planes ; i++)
     {   planes[i].moveInLine();
-        if(!planes[i].planeReached)
-            drawLine(planes[i].line_ctr , i);
+        planes[i].drawLine();
     }
 }
 
@@ -261,7 +262,7 @@ int main()
 
 
 
-    int clickedPlaneIndex=-1;
+    
 
     while (window.isOpen())
     {   
@@ -272,9 +273,6 @@ int main()
             switch(event.type)
             {
                 case sf::Event::Closed :
-                    window.close();
-                    break;
-                case sf::Event::KeyPressed :
                     window.close();
                     break;
                 default :
@@ -288,11 +286,12 @@ int main()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	        {
 	            mouse_pos=sf::Mouse::getPosition(window);
+	            std::cout<<mouse_pos.x<<" "<<mouse_pos.y<<"\n";
 	            if(!click_started) {
 	                clickedPlaneIndex = whichPlaneClicked(mouse_pos);
 	                if (clickedPlaneIndex>=0)
 	                	planes[clickedPlaneIndex].refreshPointsList();
-	                std::cout<<"clicked"<<" "<<clickedPlaneIndex<<"\n";
+	                
 	            }
 
 	            click_started=true;
@@ -301,12 +300,12 @@ int main()
 
 	                planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
 	                planes[clickedPlaneIndex].line_ctr++; 
-	                std::cout<<"If"<<" "<<planes[clickedPlaneIndex].line_ctr<<"\n";
+	                
 	            }
 	            else if(clickedPlaneIndex>=0)
 	            {
 	                dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
-	                if(dist>15) {
+	                if(dist>line_resolution) {
 	                	planes[clickedPlaneIndex].line_drawn=true;
 	                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
 	                    
@@ -324,7 +323,10 @@ int main()
 
 
         window.draw(bg);
-        window.draw(planes[0].planeSprite);
+
+        for(int i=0; i<no_of_planes;i++)
+        	if (!planes[i].planeLanded)
+        		window.draw(planes[i].planeSprite);
 
         drawLinesForAll();
         

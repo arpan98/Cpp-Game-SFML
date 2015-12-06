@@ -13,11 +13,12 @@ sf::RenderWindow window;
 sf::Vector2f landingZone1(249,138);
 sf::Vector2f landingZone1Direction(1,0);
 
+
 int no_of_planes=0;
 int clickedPlaneIndex=-1;
 
 
-
+void shiftOneDown(long index);
 
 class Plane
     {   
@@ -154,7 +155,7 @@ class Plane
                 }
             }
 
-        void landing (sf::Vector2f landingZoneDirection, sf::Vector2f landingZone)
+        void landing (sf::Vector2f landingZoneDirection, sf::Vector2f landingZone, int planeIndex)
         	{	
 
         		rotate(landingZone1Direction);      		
@@ -165,6 +166,8 @@ class Plane
         		else
         		{	
         			transition=false;
+        			shiftOneDown(planeIndex);
+                	no_of_planes-=1; 
         			
         		}
         	}
@@ -231,8 +234,15 @@ class Plane
     };
 
 
-Plane planes[1];
+Plane planes[5];
 
+void shiftOneDown(long index)
+{
+    for(long i=index ; i<no_of_planes-1 ; i++)
+    {
+        planes[i]=planes[i+1];
+    }
+}
 
 int distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
 {
@@ -252,7 +262,8 @@ void drawLinesForAll()
         if (sqrt((planes[i].getPosition().x - landingZone1.x)*(planes[i].getPosition().x - landingZone1.x) + (planes[i].getPosition().y - landingZone1.y)*(planes[i].getPosition().y - landingZone1.y))<15)
 			{	
 				planes[i].transition=true;
-				planes[i].planeLanded=true;        	
+				planes[i].planeLanded=true;    
+                   	
 			}
     }
 }
@@ -288,12 +299,18 @@ int main()
     sf::Sprite bg;
     bg.setTexture(texture);
 
-
+    sf::CircleShape landingCircle1(15.f);
+    landingCircle1.setFillColor(sf::Color::Green);
+    landingCircle1.setOrigin(sf::Vector2f(15,15));
+    landingCircle1.setPosition(sf::Vector2f(249,138));
 
     
 
     while (window.isOpen())
     {   
+
+        std::cout<<no_of_planes<<std::endl;
+
         mouse_pos=sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
@@ -314,11 +331,12 @@ int main()
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	        {
 	            mouse_pos=sf::Mouse::getPosition(window);
-	            std::cout<<mouse_pos.x<<" "<<mouse_pos.y<<"\n";
 	            if(!click_started) {
 	                clickedPlaneIndex = whichPlaneClicked(mouse_pos);
-	                if (clickedPlaneIndex>=0)
+	                if (clickedPlaneIndex>=0) {
 	                	planes[clickedPlaneIndex].refreshPointsList();
+
+                    }
 	                
 	            }
 
@@ -346,7 +364,6 @@ int main()
 	        {
 	            
 	            click_started=false;
-
 	        }
 
 
@@ -358,10 +375,16 @@ int main()
         			window.draw(planes[i].planeSprite);
 	        	if (planes[i].transition==true)
 	        	{
-	        		planes[i].landing(landingZone1Direction,landingZone1);
+	        		planes[i].landing(landingZone1Direction,landingZone1,i);
 	        		window.draw(planes[i].planeSprite);
 	        	}
         	}
+
+        if(click_started)
+        {
+            window.draw(landingCircle1);
+        }
+
 
         drawLinesForAll();
 

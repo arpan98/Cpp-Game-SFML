@@ -362,13 +362,18 @@ int main()
 	        }
         else
 	        {
-	            
+	            clickedPlaneIndex=-1;
 	            click_started=false;
 	        }
 
 
         window.draw(bg);
+        if(clickedPlaneIndex>=0)
+        {
+            window.draw(landingCircle1);
+        }
 
+        
         for(int i=0; i<no_of_planes;i++)
         	{
         		if (!planes[i].planeLanded)
@@ -380,11 +385,7 @@ int main()
 	        	}
         	}
 
-        if(click_started)
-        {
-            window.draw(landingCircle1);
-        }
-
+        
 
         drawLinesForAll();
 

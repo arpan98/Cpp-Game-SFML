@@ -320,7 +320,7 @@ void drawLinesForAll()
         		planes[i].drawLine();
         	}
         if (planes[i].getPosition().y>120 && planes[i].getPosition().y<150 && planes[i].getPosition().x>240 && planes[i].getPosition().x<350 && planes[i].last_direction.x >0)
-			{	
+        	{	
                 if(fabs(planes[i].last_direction.y/planes[i].last_direction.x)<0.3)
                 {
 				    planes[i].transition=true;
@@ -374,7 +374,7 @@ int main()
     scoretext.setPosition(600,0);
 
 
-    sf::RectangleShape landingRectangle1(sf::Vector2f(80,32));
+    sf::RectangleShape landingRectangle1(sf::Vector2f(250,32));
     landingRectangle1.setFillColor(sf::Color(0,255,0,150));
     landingRectangle1.setPosition(sf::Vector2f(249,120));
 
@@ -424,11 +424,13 @@ int main()
 	                dist = manhattan_distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
                     //std::cout<<slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)<<std::endl;
                     //std::cout<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.y<<std::endl;
+
 	                if (planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x>240 &&
 	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<350 &&
 	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y>125 && 
 	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y<150 && 
 	                	fabs(slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)) < 0.3
+
                         && planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position.x > planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position.x)
 	                {
 	                	planes[clickedPlaneIndex].line_drawn=true;
@@ -459,7 +461,7 @@ int main()
         }
 
         scorestring=convertInt(score);
-        scorestring = "Score :" + scorestring;
+        scorestring = "Score : " + scorestring;
         scoretext.setString(scorestring);
         window.draw(scoretext);
 

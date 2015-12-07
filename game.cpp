@@ -78,8 +78,19 @@ class Plane
             }
         
         sf::Vector2f getPosition()
-            {
+            {	
                 return planeSprite.getPosition();
+            } 
+
+        sf::Sprite getPlaneSprite()
+            {	
+            	if(!planeTexture.loadFromFile("airplane.png"))
+                    {
+                        std::cout<<"Error opening plane icon\n";
+                    }
+                planeSprite.setTexture(planeTexture);
+                planeSprite.setOrigin(24,24);
+                return planeSprite;
             } 
 
         void refreshPointsList()
@@ -266,8 +277,8 @@ class Plane
 
     };
 
+std::vector<Plane> planes;
 
-Plane planes[1];
 
 void shiftOneDown(long index)
 {
@@ -342,16 +353,19 @@ int whichPlaneClicked(sf::Vector2i mouse_pos)
 
 int main()
 {	
-	
+	sf::Clock clock;
+	sf::Time time;
 	int dist;
     bool planeClicked = false;
     bool click_started = false;
+
 
     window.create(sf::VideoMode (774,359), "Game");
     window.setPosition(sf::Vector2i(100,100));
     window.setTitle("Arphal :P");
     
     
+
      //Setting background
     sf::Texture texture;
     if (!texture.loadFromFile("airport.png"))
@@ -397,7 +411,15 @@ int main()
 
         }
 
-
+        time = clock.getElapsedTime();
+	    std::cout<<time.asSeconds()<<" "<<no_of_planes<<std::endl;
+	   
+	    if(int(time.asSeconds()>no_of_planes))
+	    {
+	    	planes.push_back(Plane());
+	    	//no_of_planes++;
+	    }
+	    
 
         if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	        {
@@ -454,6 +476,7 @@ int main()
 	        }
 
 
+
         window.draw(bg);
         if(clickedPlaneIndex>=0)
         {
@@ -467,13 +490,13 @@ int main()
 
 
         for(int i=0; i<no_of_planes;i++)
-        	{
+        	{	std::cout<<!planes[i].planeLanded<<std::endl;
         		if (!planes[i].planeLanded)
-        			window.draw(planes[i].planeSprite);
+        			window.draw(planes[i].getPlaneSprite());
 	        	if (planes[i].transition==true)
 	        	{
 	        		planes[i].landing(landingZone1Direction,landingZone1,i);
-	        		window.draw(planes[i].planeSprite);
+	        		window.draw(planes[i].getPlaneSprite());
 	        	}
         	}
 

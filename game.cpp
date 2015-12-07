@@ -5,11 +5,14 @@
 #include <math.h>
 #include <SFML/Graphics/Image.hpp>
 #include <time.h>
+#include <sstream>
 #include <stdlib.h>
 
 
 #define SPEED 1
-#define line_resolution 1
+#define line_resolution 10
+
+std::stringstream scorestring;
 
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
@@ -18,6 +21,7 @@ sf::Vector2f landingZone1Direction(1,0);
 
 
 int no_of_planes=0;
+long score=0;
 int clickedPlaneIndex=-1;
 
 void shiftOneDown(long index);
@@ -165,8 +169,8 @@ class Plane
         		{	
         			transition=false;
         			shiftOneDown(planeIndex);
-                	no_of_planes-=1; 
-        			
+                	no_of_planes-=1;
+                    score+=1;        			
         		}
         	}
 
@@ -262,7 +266,7 @@ class Plane
     };
 
 
-Plane planes[5];
+Plane planes[1];
 
 void shiftOneDown(long index)
 {
@@ -272,12 +276,23 @@ void shiftOneDown(long index)
     }
 }
 
-int distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
+int manhattan_distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
 {
     return fabs(mouse_pos.y - planes[clickedPlaneIndex].line_points[index].position.y) + fabs(mouse_pos.x - planes[clickedPlaneIndex].line_points[index].position.x);
 }
 
+float distance (sf::Vector2f p1 , sf::Vector2f p2)
+{
+    return sqrt((p2.x-p1.x)*(p2.x-p1.x) + (p2.y-p1.y)*(p2.y-p1.y));
+}
 
+float slope (sf::Vector2f p1 , sf::Vector2f p2)
+{
+    if(p2.x!=p1.x)
+        return ((float(p2.y)-float(p1.y))/(float(p2.x)-float(p1.x)));
+    else
+        return -1;
+}
 
 void drawLinesForAll()
 {
@@ -287,11 +302,13 @@ void drawLinesForAll()
     			planes[i].moveInLine();
         		planes[i].drawLine();
         	}
-        if (sqrt((planes[i].getPosition().x - landingZone1.x)*(planes[i].getPosition().x - landingZone1.x) + (planes[i].getPosition().y - landingZone1.y)*(planes[i].getPosition().y - landingZone1.y))<15)
+        if (distance(planes[i].getPosition() , landingZone1)<15 && planes[i].last_direction.x >0)
 			{	
-				planes[i].transition=true;
-				planes[i].planeLanded=true;    
-                   	
+                if(fabs(planes[i].last_direction.y/planes[i].last_direction.x)<0.3)
+                {
+				    planes[i].transition=true;
+				    planes[i].planeLanded=true;    
+                }
 			}
     }
 }
@@ -315,7 +332,7 @@ int main()
 
     window.create(sf::VideoMode (774,359), "Game");
     window.setPosition(sf::Vector2i(100,100));
-    window.setTitle("Changed Title");
+    window.setTitle("Arphal :P");
     
     
      //Setting background
@@ -328,15 +345,26 @@ int main()
     sf::Sprite bg;
     bg.setTexture(texture);
 
-    sf::CircleShape landingCircle1(15.f);
-    landingCircle1.setFillColor(sf::Color::Green);
-    landingCircle1.setOrigin(sf::Vector2f(15,15));
-    landingCircle1.setPosition(sf::Vector2f(249,138));
+    sf::Font font;
+    if(!font.loadFromFile("Roboto-Medium.ttf"))
+    {
+        std::cout<<"Error! Font not found";
+    }
+
+    sf::Text scoretext;
+    scoretext.setFont(font);
+    scoretext.setColor(sf::Color::Red);
+    scoretext.setPosition(600,0);
+
+    sf::RectangleShape landingRectangle1(sf::Vector2f(80,32));
+    landingRectangle1.setFillColor(sf::Color(0,255,0,150));
+    landingRectangle1.setPosition(sf::Vector2f(249,120));
 
     
 
     while (window.isOpen())
     {   
+        std::cout<<no_of_planes<<" "<<score<<std::endl;
         mouse_pos=sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
@@ -376,8 +404,12 @@ int main()
 	            }
 	            else if(clickedPlaneIndex>=0)
 	            {
-	                dist = distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
-	                if (sqrt((mouse_pos.x - landingZone1.x)*(mouse_pos.x - landingZone1.x) + (mouse_pos.y - landingZone1.y)*(mouse_pos.y - landingZone1.y))<15)
+	                dist = manhattan_distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
+                    //std::cout<<slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)<<std::endl;
+                    //std::cout<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.y<<std::endl;
+	                if (sqrt((mouse_pos.x - landingZone1.x)*(mouse_pos.x - landingZone1.x) + (mouse_pos.y - landingZone1.y)*(mouse_pos.y - landingZone1.y))<15
+                        && fabs(slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)) < 0.3
+                        && planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position.x > planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position.x)
 	                {
 	                	planes[clickedPlaneIndex].line_drawn=true;
 	                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
@@ -388,7 +420,6 @@ int main()
 	                {
 	                	planes[clickedPlaneIndex].line_drawn=true;
 	                    planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr]=sf::Vertex(sf::Vector2f(mouse_pos.x , mouse_pos.y));
-	                    
 	                    planes[clickedPlaneIndex].line_ctr++;
 	            	}
 	            
@@ -404,8 +435,11 @@ int main()
         window.draw(bg);
         if(clickedPlaneIndex>=0)
         {
-            window.draw(landingCircle1);
+            window.draw(landingRectangle1);
         }
+        scorestring<<score;
+        scoretext.setString("Score : " + scorestring.str());
+        window.draw(scoretext);
 
 
         for(int i=0; i<no_of_planes;i++)

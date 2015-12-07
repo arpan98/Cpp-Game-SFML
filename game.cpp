@@ -21,7 +21,7 @@ sf::Vector2f landingZone1Direction(1,0);
 
 
 int no_of_planes=0;
-long score=0;
+int score=0;
 int clickedPlaneIndex=-1;
 
 void shiftOneDown(long index);
@@ -438,6 +438,7 @@ int main()
             window.draw(landingRectangle1);
         }
         scorestring<<score;
+        std::cout<<score<< " "<<scorestring.str()<<"\n";
         scoretext.setString("Score : " + scorestring.str());
         window.draw(scoretext);
 

@@ -374,7 +374,7 @@ int main()
     scoretext.setPosition(600,0);
 
 
-    sf::RectangleShape landingRectangle1(sf::Vector2f(80,32));
+    sf::RectangleShape landingRectangle1(sf::Vector2f(250,32));
     landingRectangle1.setFillColor(sf::Color(0,255,0,150));
     landingRectangle1.setPosition(sf::Vector2f(249,120));
 
@@ -424,7 +424,7 @@ int main()
 	                dist = manhattan_distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
                     //std::cout<<slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)<<std::endl;
                     //std::cout<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.y<<std::endl;
-	                if (mouse_pos.x>240 && mouse_pos.x<275 && mouse_pos.y>120 && mouse_pos.y<150
+                    if (mouse_pos.x>240 && mouse_pos.x<500 && mouse_pos.y>120 && mouse_pos.y<150
                         && fabs(slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)) < 0.3
                         && planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position.x > planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position.x)
 	                {

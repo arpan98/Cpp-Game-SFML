@@ -4,6 +4,9 @@
 #include <utility>
 #include <math.h>
 #include <SFML/Graphics/Image.hpp>
+#include <time.h>
+#include <stdlib.h>
+
 
 #define SPEED 1
 #define line_resolution 1
@@ -16,7 +19,6 @@ sf::Vector2f landingZone1Direction(1,0);
 
 int no_of_planes=0;
 int clickedPlaneIndex=-1;
-
 
 void shiftOneDown(long index);
 
@@ -37,8 +39,6 @@ class Plane
         int dist_travelled;
 
 
-
-
         Plane () 
             {
                 if(!planeTexture.loadFromFile("airplane.png"))
@@ -47,13 +47,11 @@ class Plane
                     }
                 planeSprite.setTexture(planeTexture);
                 planeSprite.setOrigin(24,24);
-                planeSprite.setPosition(100,100);
                 no_of_planes++;
                 planeLanded=line_drawn=transition=false;
                 ctr=line_ctr=dist_travelled=line_start=0;
-                last_direction.x=1;
-                last_direction.y=0;
-                planeSprite.setRotation(135);
+                sendInPlane();
+
             }
 
 
@@ -230,6 +228,36 @@ class Plane
                     }
             }
 
+            void sendInPlane()
+            {	
+            	srand(time(NULL));
+            	switch(rand()%4)
+            	{	
+            		/*
+            		0 : -40< x < -20
+            			  0 < y < 359
+            		1 :  790< x < 810
+            			  0 < y < 359
+					2 :  -40 < x< 810
+						 -40 < y <-20
+            		3 :  -40 < x< 810
+						 380 < y < 400
+					*/ 
+            		case 0: planeSprite.setPosition(-40 + rand()%20,rand()%359);
+            				break;
+            		case 1:	planeSprite.setPosition(790 + rand()%20,rand()%359);
+            				break;
+            		case 2:	planeSprite.setPosition(-40 + rand()%850,-40 +rand()%20);
+            				break;
+            		case 3:	planeSprite.setPosition(-40 + rand()%850,380 +rand()%20);
+            				break;
+            	}
+            	last_direction.x=(774/2) - getPosition().x;
+                last_direction.y=(360/2) - getPosition().y;
+                rotate(last_direction);                
+            }
+
+
 
     };
 
@@ -279,8 +307,9 @@ int whichPlaneClicked(sf::Vector2i mouse_pos)
 }
 
 int main()
-{
-    int dist;
+{	
+	
+	int dist;
     bool planeClicked = false;
     bool click_started = false;
 

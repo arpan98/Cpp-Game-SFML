@@ -15,6 +15,7 @@ sf::Vector2f landingZone1Direction(1,0);
 
 
 int no_of_planes=0;
+int score=0;
 int clickedPlaneIndex=-1;
 
 
@@ -167,8 +168,8 @@ class Plane
         		{	
         			transition=false;
         			shiftOneDown(planeIndex);
-                	no_of_planes-=1; 
-        			
+                	no_of_planes-=1;
+                    score+=1;        			
         		}
         	}
 
@@ -312,6 +313,16 @@ int main()
     sf::Sprite bg;
     bg.setTexture(texture);
 
+    sf::Font font;
+    if(!font.loadFromFile("Roboto-Medium.ttf"))
+    {
+        std::cout<<"Error! Font not found";
+    }
+
+    sf::Text scoretext;
+    scoretext.setFont(font);
+    scoretext.setColor(sf::Color::Red);
+    scoretext.setPosition(600,0);
 
     sf::RectangleShape landingRectangle1(sf::Vector2f(80,32));
     landingRectangle1.setFillColor(sf::Color(0,255,0,150));
@@ -321,6 +332,7 @@ int main()
 
     while (window.isOpen())
     {   
+        std::cout<<no_of_planes<<" "<<score<<std::endl;
         mouse_pos=sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
@@ -393,6 +405,9 @@ int main()
         {
             window.draw(landingRectangle1);
         }
+
+        scoretext.setString("Score : " + std::to_string(score));
+        window.draw(scoretext);
 
 
         for(int i=0; i<no_of_planes;i++)

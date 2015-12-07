@@ -1,18 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include <utility>
 #include <math.h>
 #include <SFML/Graphics/Image.hpp>
 #include <time.h>
-#include <sstream>
+#include <string>
 #include <stdlib.h>
 
 
 #define SPEED 1
-#define line_resolution 10
+#define line_resolution 1
 
-std::stringstream scorestring;
+std::string scorestring;
 
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
@@ -124,18 +125,18 @@ class Plane
                     planeSprite.setRotation(135+angle);
             }
 
-           void drawLine()
-				{
-				    if(line_ctr>=1)
-				    {
-				        for(long i=line_start+1 ; i<line_ctr ; i++)
-				        {
-				            line_vertices[0]=line_points[i-1];
-				            line_vertices[1]=line_points[i];
-				            window.draw(line_vertices , 2 , sf::Lines);
-				        }
-				    }
-				}
+        void drawLine()
+			{
+			    if(line_ctr>=1)
+			    {
+			        for(long i=line_start+1 ; i<line_ctr ; i++)
+			        {
+			            line_vertices[0]=line_points[i-1];
+			            line_vertices[1]=line_points[i];
+			            window.draw(line_vertices , 2 , sf::Lines);
+			        }
+			    }
+			}
 
         void moveInDirection(sf::Vector2f initial_point , sf::Vector2f direction , int distance = 20000)
             {
@@ -276,6 +277,22 @@ void shiftOneDown(long index)
     }
 }
 
+std::string convertInt(int number)
+{
+    if (number == 0)
+        return "0";
+    std::string temp="";
+    std::string returnvalue="";
+    while (number>0)
+    {
+        temp+=number%10+48;
+        number/=10;
+    }
+    for (int i=0;i<temp.length();i++)
+        returnvalue+=temp[temp.length()-i-1];
+    return returnvalue;
+}
+
 int manhattan_distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
 {
     return fabs(mouse_pos.y - planes[clickedPlaneIndex].line_points[index].position.y) + fabs(mouse_pos.x - planes[clickedPlaneIndex].line_points[index].position.x);
@@ -302,7 +319,7 @@ void drawLinesForAll()
     			planes[i].moveInLine();
         		planes[i].drawLine();
         	}
-        if (distance(planes[i].getPosition() , landingZone1)<15 && planes[i].last_direction.x >0)
+        if (planes[i].getPosition().y>120 && planes[i].getPosition().y<150 && planes[i].getPosition().x>240 && planes[i].getPosition().x<350 && planes[i].last_direction.x >0)
 			{	
                 if(fabs(planes[i].last_direction.y/planes[i].last_direction.x)<0.3)
                 {
@@ -356,6 +373,7 @@ int main()
     scoretext.setColor(sf::Color::Red);
     scoretext.setPosition(600,0);
 
+
     sf::RectangleShape landingRectangle1(sf::Vector2f(80,32));
     landingRectangle1.setFillColor(sf::Color(0,255,0,150));
     landingRectangle1.setPosition(sf::Vector2f(249,120));
@@ -364,7 +382,6 @@ int main()
 
     while (window.isOpen())
     {   
-        std::cout<<no_of_planes<<" "<<score<<std::endl;
         mouse_pos=sf::Mouse::getPosition(window);
         sf::Event event;
         while (window.pollEvent(event))
@@ -407,8 +424,11 @@ int main()
 	                dist = manhattan_distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
                     //std::cout<<slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)<<std::endl;
                     //std::cout<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.y<<std::endl;
-	                if (sqrt((mouse_pos.x - landingZone1.x)*(mouse_pos.x - landingZone1.x) + (mouse_pos.y - landingZone1.y)*(mouse_pos.y - landingZone1.y))<15
-                        && fabs(slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)) < 0.3
+	                if (planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x>240 &&
+	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<350 &&
+	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y>125 && 
+	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y<150 && 
+	                	fabs(slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)) < 0.3
                         && planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position.x > planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position.x)
 	                {
 	                	planes[clickedPlaneIndex].line_drawn=true;
@@ -437,9 +457,10 @@ int main()
         {
             window.draw(landingRectangle1);
         }
-        scorestring<<score;
-        std::cout<<score<< " "<<scorestring.str()<<"\n";
-        scoretext.setString("Score : " + scorestring.str());
+
+        scorestring=convertInt(score);
+        scorestring = "Score :" + scorestring;
+        scoretext.setString(scorestring);
         window.draw(scoretext);
 
 

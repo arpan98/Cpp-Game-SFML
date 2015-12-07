@@ -13,8 +13,6 @@
 #define SPEED 1
 #define line_resolution 1
 
-std::string scorestring;
-
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
 sf::Vector2f landingZone1(249,138);
@@ -353,12 +351,12 @@ int whichPlaneClicked(sf::Vector2i mouse_pos)
 
 int main()
 {	
-	sf::Clock clock;
-	sf::Time time;
+	sf::Clock clock, totalClock;
+	sf::Time time, totalTime;
 	int dist;
     bool planeClicked = false;
     bool click_started = false;
-
+    float last_gap =5;
 
     window.create(sf::VideoMode (774,359), "Game");
     window.setPosition(sf::Vector2i(100,100));
@@ -386,6 +384,10 @@ int main()
     scoretext.setFont(font);
     scoretext.setColor(sf::Color::Red);
     scoretext.setPosition(600,0);
+    sf::Text timetext;
+    timetext.setFont(font);
+    timetext.setColor(sf::Color::Red);
+    timetext.setPosition(10,0);
 
 
     sf::RectangleShape landingRectangle1(sf::Vector2f(250,32));
@@ -412,12 +414,17 @@ int main()
         }
 
         time = clock.getElapsedTime();
-	    std::cout<<time.asSeconds()<<" "<<no_of_planes<<std::endl;
+        totalTime = totalClock.getElapsedTime();
+        float gap = 5*exp(-0.01*totalTime.asSeconds());
+	    std::cout<<time.asSeconds()<<" Gap= "<<last_gap<<" "<<no_of_planes<<std::endl;
+
 	   
-	    if(int(time.asSeconds()>no_of_planes))
+	    if(time.asSeconds()>last_gap)
 	    {
 	    	planes.push_back(Plane());
-	    	//no_of_planes++;
+	    	last_gap=gap;
+	    	clock.restart();
+	    	
 	    }
 	    
 
@@ -483,14 +490,16 @@ int main()
             window.draw(landingRectangle1);
         }
 
-        scorestring=convertInt(score);
-        scorestring = "Score : " + scorestring;
-        scoretext.setString(scorestring);
+        
+        
+        timetext.setString("Time: "+convertInt(totalTime.asSeconds()));
+        scoretext.setString("Score : " + convertInt(score));
         window.draw(scoretext);
+        window.draw(timetext);
 
 
         for(int i=0; i<no_of_planes;i++)
-        	{	std::cout<<!planes[i].planeLanded<<std::endl;
+        	{	
         		if (!planes[i].planeLanded)
         			window.draw(planes[i].getPlaneSprite());
 	        	if (planes[i].transition==true)

@@ -319,7 +319,7 @@ void drawLinesForAll()
     			planes[i].moveInLine();
         		planes[i].drawLine();
         	}
-        if (planes[i].getPosition().y>120 && planes[i].getPosition().y<150 && planes[i].getPosition().x>240 && planes[i].getPosition().x<255 && planes[i].last_direction.x >0)
+        if (planes[i].getPosition().y>120 && planes[i].getPosition().y<150 && planes[i].getPosition().x>240 && planes[i].getPosition().x<275 && planes[i].last_direction.x >0)
 			{	
                 if(fabs(planes[i].last_direction.y/planes[i].last_direction.x)<0.3)
                 {
@@ -456,7 +456,7 @@ int main()
         }
 
         scorestring=convertInt(score);
-        scorestring = "Score :" + scorestring;
+        scorestring = "Score : " + scorestring;
         scoretext.setString(scorestring);
         window.draw(scoretext);
 

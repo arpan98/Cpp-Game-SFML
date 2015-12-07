@@ -6,13 +6,14 @@
 #include <math.h>
 #include <SFML/Graphics/Image.hpp>
 #include <time.h>
+#include <string>
 #include <stdlib.h>
 
 
 #define SPEED 1
 #define line_resolution 1
 
-std::stringstream scorestring;
+std::string scorestring;
 
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
@@ -276,6 +277,22 @@ void shiftOneDown(long index)
     }
 }
 
+std::string convertInt(int number)
+{
+    if (number == 0)
+        return "0";
+    std::string temp="";
+    std::string returnvalue="";
+    while (number>0)
+    {
+        temp+=number%10+48;
+        number/=10;
+    }
+    for (int i=0;i<temp.length();i++)
+        returnvalue+=temp[temp.length()-i-1];
+    return returnvalue;
+}
+
 int manhattan_distance (long index , sf::Vector2i mouse_pos , long clickedPlaneIndex)
 {
     return fabs(mouse_pos.y - planes[clickedPlaneIndex].line_points[index].position.y) + fabs(mouse_pos.x - planes[clickedPlaneIndex].line_points[index].position.x);
@@ -438,8 +455,9 @@ int main()
             window.draw(landingRectangle1);
         }
 
-        scorestring<<score;
-        scoretext.setString("Score : " + scorestring.str());
+        scorestring=convertInt(score);
+        scorestring = "Score :" + scorestring;
+        scoretext.setString(scorestring);
         window.draw(scoretext);
 
 

@@ -11,7 +11,7 @@
 
 
 #define SPEED 1
-#define line_resolution 1
+#define line_resolution 10
 
 sf::Vector2i mouse_pos;
 sf::RenderWindow window;
@@ -280,10 +280,13 @@ std::vector<Plane> planes;
 
 void shiftOneDown(long index)
 {
-    for(long i=index ; i<no_of_planes-1 ; i++)
+    /*for(long i=index ; i<no_of_planes-1 ; i++)
     {
         planes[i]=planes[i+1];
     }
+    */
+    planes.erase(planes.begin()+index);
+    //no_of_planes--;
 }
 
 std::string convertInt(int number)

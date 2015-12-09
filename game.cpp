@@ -38,6 +38,7 @@ class Plane
         bool planeLanded;
         bool line_drawn;
         bool transition;
+        bool existence;
         long ctr;
         int dist_travelled;
 
@@ -51,9 +52,9 @@ class Plane
                 planeSprite.setTexture(planeTexture);
                 planeSprite.setOrigin(24,24);
                 no_of_planes++;
-                planeLanded=line_drawn=transition=false;
+                planeLanded=line_drawn=transition=existence=false;
                 ctr=line_ctr=dist_travelled=line_start=0;
-                sendInPlane();
+                
 
             }
 
@@ -68,7 +69,7 @@ class Plane
                 planeSprite.setOrigin(24,24);
                 planeSprite.setPosition(100,100);
                	no_of_planes++;
-                planeLanded=line_drawn=transition=false;
+                planeLanded=line_drawn=transition=existence=false;
                 ctr=line_ctr=dist_travelled=line_start=0;
                 last_direction.x=1;
                 last_direction.y=0;
@@ -275,7 +276,7 @@ class Plane
 
     };
 
-std::vector<Plane> planes;
+Plane planes[5];
 
 
 void shiftOneDown(long index)
@@ -285,7 +286,7 @@ void shiftOneDown(long index)
         planes[i]=planes[i+1];
     }
     */
-    planes.erase(planes.begin()+index);
+    planes[index].existence=false;
     //no_of_planes--;
 }
 
@@ -418,13 +419,18 @@ int main()
 
         time = clock.getElapsedTime();
         totalTime = totalClock.getElapsedTime();
-        float gap = 5*exp(-0.01*totalTime.asSeconds());
-	    std::cout<<time.asSeconds()<<" Gap= "<<last_gap<<" "<<no_of_planes<<std::endl;
+        float gap = 5*exp(-0.005*totalTime.asSeconds());
 
 	   
 	    if(time.asSeconds()>last_gap)
-	    {
-	    	planes.push_back(Plane());
+	    {	long index=0;
+	    	while(planes[index].existence)
+	    		index++;
+	    	if(index<no_of_planes)
+	    	{
+	    	planes[index].existence=true;
+	    	planes[index].sendInPlane();
+	    	}
 	    	last_gap=gap;
 	    	clock.restart();
 	    	
@@ -454,9 +460,7 @@ int main()
 	            else if(clickedPlaneIndex>=0)
 	            {
 	                dist = manhattan_distance(planes[clickedPlaneIndex].line_ctr-1,mouse_pos,clickedPlaneIndex);
-                    //std::cout<<slope(planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-1].position , planes[clickedPlaneIndex].line_points[(planes[clickedPlaneIndex].line_ctr)-2].position)<<std::endl;
-                    //std::cout<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.x<<" "<<planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-2].position.y<<std::endl;
-
+                    
 	                if (planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x>240 &&
 	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.x<350 &&
 	                	planes[clickedPlaneIndex].line_points[planes[clickedPlaneIndex].line_ctr-1].position.y>125 && 
@@ -504,11 +508,11 @@ int main()
         for(int i=0; i<no_of_planes;i++)
         	{	
         		if (!planes[i].planeLanded)
-        			window.draw(planes[i].getPlaneSprite());
+        			window.draw(planes[i].planeSprite);
 	        	if (planes[i].transition==true)
 	        	{
 	        		planes[i].landing(landingZone1Direction,landingZone1,i);
-	        		window.draw(planes[i].getPlaneSprite());
+	        		window.draw(planes[i].planeSprite);
 	        	}
         	}
 
